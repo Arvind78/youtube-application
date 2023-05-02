@@ -12,7 +12,8 @@ const signup = async (req, res, next) => {
         if (checkUser) return next(error(403, "user already exists!"));
         const hash = await bcrypt.hash(req.body.password, 10);
         const newUser = await usermodel.create({ ...req.body, password: hash });
-       res.status(200).send("user has been created!");
+        const token = jwt.sign({newUser:user._id},process.env.ScrateKey);
+       res.status(200).json({token,massage:"user has been created!"});
     } catch (err) {
         next(err)
     }
