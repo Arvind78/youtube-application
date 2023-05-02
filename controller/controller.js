@@ -6,13 +6,13 @@ const error = require("../error")
  
 // signup controller function 
 const signup = async (req, res, next) => {
+        console.log("backend",req.body)
     try {
         const checkUser = await usermodel.findOne({ email: req.body.email });
         if (checkUser) return next(error(403, "user already exists!"));
         const hash = await bcrypt.hash(req.body.password, 10);
         const newUser = await usermodel.create({ ...req.body, password: hash });
-        const token = jwt.sign({id:newUser._id},process.env.ScrateKey);
-        res.status(200).send({token},"user has been created!");
+       res.status(200).send("user has been created!");
     } catch (err) {
         next(err)
     }
@@ -57,7 +57,7 @@ const googleauth =async(req,res,next)=>{
         console.log(newUser)
         const token = jwt.sign({id:newUser._id},process.env.ScrateKey);
         res.cookie("access_token",token,{
-          httpOnly:true
+          httpsOnly:true
         }).status(200).json(newUser._doc);
        
      }
