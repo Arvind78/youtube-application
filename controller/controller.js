@@ -11,8 +11,8 @@ const signup = async (req, res, next) => {
         if (checkUser) return next(error(403, "user already exists!"));
         const hash = await bcrypt.hash(req.body.password, 10);
         const newUser = await usermodel.create({ ...req.body, password: hash });
-        res.status(200).send("user has been created!");
-
+        const token = jwt.sign({id:newUser._id},process.env.ScrateKey);
+        res.status(200).send({token},"user has been created!");
     } catch (err) {
         next(err)
     }
@@ -32,6 +32,7 @@ const signin = async (req, res, next) => {
     res.cookie("access_token",token,{
         httpsOnly:true
     }).status(200).json(others);
+   
     } catch (err) {
         next(err)
     }
@@ -47,6 +48,8 @@ const googleauth =async(req,res,next)=>{
       res.cookie("access_token",token,{
         httpsOnly:true
       }).status(200).json(user._doc);
+
+
      }else{
        const newUser = await usermodel.create({
             ...req.body,fromGoogle:true
@@ -56,6 +59,7 @@ const googleauth =async(req,res,next)=>{
         res.cookie("access_token",token,{
           httpOnly:true
         }).status(200).json(newUser._doc);
+       
      }
 
    } catch (err) {
