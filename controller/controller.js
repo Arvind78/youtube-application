@@ -30,7 +30,7 @@ const signin = async (req, res, next) => {
     const token = jwt.sign({id:user._id},process.env.ScrateKey);
     const {password,...others} = user._doc
     res.cookie("access_token",token,{
-        httpOnly:true
+        httpsOnly:true
     }).status(200).json(others);
     } catch (err) {
         next(err)
@@ -45,7 +45,7 @@ const googleauth =async(req,res,next)=>{
      if(user){
     const token = jwt.sign({id:user._id},process.env.ScrateKey);
       res.cookie("access_token",token,{
-        httpOnly:true
+        httpsOnly:true
       }).status(200).json(user._doc);
      }else{
        const newUser = await usermodel.create({
